@@ -31,8 +31,11 @@ Poco::Net::HTTPRequestHandler* RequestHandlerFactory::createRequestHandler(const
     }
 
 
-    // route requests
+    // setup template data
     nlohmann::json data;
+    data["is_teacher"] = is_teacher;
+    data["is_authorised"] = authorised;
+
     auto uri = req.getURI();
     auto method = req.getMethod();
 
@@ -40,7 +43,7 @@ Poco::Net::HTTPRequestHandler* RequestHandlerFactory::createRequestHandler(const
     {
         if (authorised)
         {
-            return new NotFoundHandler(std::make_shared<inja::Environment>(env));
+            return new RedirectHandler("/book");
         }
         else
         {
@@ -63,5 +66,5 @@ Poco::Net::HTTPRequestHandler* RequestHandlerFactory::createRequestHandler(const
         return new LoginHandler(std::make_unique<Poco::Data::Session>("SQLite", db_path), std::make_shared<SessionManager>(Poco::makeShared<Poco::Crypto::ECKey>(ec_key)));
     }
 
-    return new NotFoundHandler(std::make_shared<inja::Environment>(env));
+    return new NotFoundHandler(std::make_shared<inja::Environment>(env), data);
 }

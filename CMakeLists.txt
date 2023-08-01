@@ -13,7 +13,7 @@ set(SRC
         src/handlers/StaticResourceHandler.cpp
         src/handlers/RegistrationHandler.cpp
         src/handlers/LoginHandler.cpp
-        src/SessionManager.cpp)
+        src/SessionManager.cpp src/handlers/RedirectHandler.cpp src/handlers/RedirectHandler.h)
 
 set(INC
         src/RequestHandlerFactory.h

@@ -16,11 +16,12 @@
 class NotFoundHandler : public Poco::Net::HTTPRequestHandler
 {
 public:
-    NotFoundHandler(std::shared_ptr<inja::Environment> env);
+    NotFoundHandler(std::shared_ptr<inja::Environment> env, const nlohmann::json& data);
 
     virtual void handleRequest(Poco::Net::HTTPServerRequest& req, Poco::Net::HTTPServerResponse& resp);
 
 
 private:
     std::shared_ptr<inja::Environment> env;
+    nlohmann::json data;
 };

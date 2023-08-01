@@ -1,7 +1,7 @@
 #include "NotFoundHandler.h"
 
-NotFoundHandler::NotFoundHandler(std::shared_ptr<inja::Environment> env)
-    : env(std::move(env))
+NotFoundHandler::NotFoundHandler(std::shared_ptr<inja::Environment> env, const nlohmann::json& data)
+    : env(std::move(env)), data(data)
 {
 }
 
@@ -11,7 +11,7 @@ void NotFoundHandler::handleRequest(Poco::Net::HTTPServerRequest& req, Poco::Net
     resp.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
     resp.setContentType("text/html");
 
-    nlohmann::json data;
+
     data["title"] = "404 - Not Found (or is it??)";
     std::string template_path = "404.html";
 

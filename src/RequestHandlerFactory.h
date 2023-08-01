@@ -24,6 +24,7 @@
 #include "handlers/NotFoundHandler.h"
 #include "handlers/RegistrationHandler.h"
 #include "handlers/LoginHandler.h"
+#include "handlers/RedirectHandler.h"
 
 class RequestHandlerFactory : public Poco::Net::HTTPRequestHandlerFactory
 {
