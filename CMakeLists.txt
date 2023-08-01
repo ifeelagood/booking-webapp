@@ -1,0 +1,53 @@
+cmake_minimum_required(VERSION 3.0)
+project(cs_ia)
+
+set(CMAKE_CXX_STANDARD 20)
+
+set(SRC
+        src/main.cpp
+        src/RequestHandlerFactory.cpp
+        src/ServerApplication.cpp
+        src/PasswordHasher.cpp
+        src/handlers/DynamicTemplateHandler.cpp
+        src/handlers/NotFoundHandler.cpp
+        src/handlers/StaticResourceHandler.cpp
+        src/handlers/RegistrationHandler.cpp
+        src/handlers/LoginHandler.cpp
+        src/SessionManager.cpp)
+
+set(INC
+        src/RequestHandlerFactory.h
+        src/ServerApplication.h
+        src/PasswordHasher.h
+        src/handlers/DynamicTemplateHandler.h
+        src/handlers/NotFoundHandler.h
+        src/handlers/StaticResourceHandler.h
+        src/handlers/DynamicTemplateHandler.h
+        src/handlers/RegistrationHandler.h
+        src/handlers/LoginHandler.h
+        src/SessionManager.h
+)
+
+
+
+add_executable(cs_ia ${SRC} ${INC})
+
+include(CMakePackageConfigHelpers)
+find_package(OpenSSL REQUIRED)
+find_package(Poco REQUIRED COMPONENTS Net DataSQLite Util Crypto jwt)
+find_package(nlohmann_json REQUIRED)
+find_package(inja REQUIRED)
+
+include_directories(${OPENSSL_INCLUDE_DIR})
+
+if (WIN32)
+    find_package(unofficial-sodium CONFIG REQUIRED)
+    target_link_libraries(cs_ia PRIVATE Poco::Net Poco::DataSQLite Poco::Util Poco::Crypto Poco::JWT OpenSSL::Crypto ${OPENSSL_LIBRARIES} unofficial-sodium::sodium nlohmann_json::nlohmann_json pantor::inja)
+else()
+    find_library(SODIUM_LIB NAMES sodium)
+    target_link_libraries(cs_ia PRIVATE Poco::Net Poco::DataSQLite Poco::Util Poco::Crypto Poco::JWT OpenSSL::Crypto ${OPENSSL_LIBRARIES} nlohmann_json::nlohmann_json pantor::inja ${SODIUM_LIB})
+endif()
+
+
+
+include(cmake/post_build.cmake)
