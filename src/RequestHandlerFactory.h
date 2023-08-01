@@ -12,6 +12,8 @@
 #include <Poco/Net/NameValueCollection.h>
 #include <Poco/Crypto/ECkey.h>
 
+#include <Poco/JSON/Object.h>
+
 #include <inja/inja.hpp>
 #include <nlohmann/json.hpp>
 
@@ -31,7 +33,6 @@ public:
     virtual Poco::Net::HTTPRequestHandler* createRequestHandler(const Poco::Net::HTTPServerRequest &req);
 
 private:
-    bool isAuthorised(const Poco::Net::HTTPServerRequest &req);
 
     inja::Environment env;
     Poco::Crypto::ECKey ec_key;

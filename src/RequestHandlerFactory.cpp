@@ -7,37 +7,38 @@ RequestHandlerFactory::RequestHandlerFactory(const std::string& db_path, const s
     Poco::Data::SQLite::Connector::registerConnector();
 }
 
-bool RequestHandlerFactory::isAuthorised(const Poco::Net::HTTPServerRequest &req)
+Poco::Net::HTTPRequestHandler* RequestHandlerFactory::createRequestHandler(const Poco::Net::HTTPServerRequest &req)
 {
-    // get cookies
+    // parse JWT and check if authorised, and if teacher role
+    bool authorised = false;
+    bool is_teacher = false;
+
     Poco::Net::NameValueCollection cookies;
     req.getCookies(cookies);
 
-    // check for session cookie
     if (cookies.has("session"))
     {
         std::string jwt = cookies.get("session");
         Poco::JWT::Token session_token;
 
-
-        if (session_manager.hasValidSignature(jwt, session_token) && !SessionManager::hasExpired(session_token))
+        if (session_manager.hasValidSignature(jwt, session_token) && !session_manager.hasExpired(session_token))
         {
-            return true;
+            authorised = true;
+
+            // check if teacher role
+            is_teacher = session_token.payload().has("is_teacher") && session_token.payload().get("is_teacher") > 0;
         }
     }
 
-    return false;
-}
 
-Poco::Net::HTTPRequestHandler* RequestHandlerFactory::createRequestHandler(const Poco::Net::HTTPServerRequest &req)
-{
+    // route requests
     nlohmann::json data;
     auto uri = req.getURI();
     auto method = req.getMethod();
 
     if (uri == "/" && method == "GET")
     {
-        if (isAuthorised(req))
+        if (authorised)
         {
             return new NotFoundHandler(std::make_shared<inja::Environment>(env));
         }
