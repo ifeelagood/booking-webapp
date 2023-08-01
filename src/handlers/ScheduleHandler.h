@@ -9,18 +9,18 @@
 #include <inja/inja.hpp>
 #include <nlohmann/json.hpp>
 
+#include "../ScheduleManager.h"
 
-
-class DynamicTemplateHandler : public Poco::Net::HTTPRequestHandler
+class ScheduleHandler : public Poco::Net::HTTPRequestHandler
 {
 public:
-    DynamicTemplateHandler(std::shared_ptr<inja::Environment> env, const std::string& template_path, const nlohmann::json& data);
+    ScheduleHandler(std::shared_ptr<inja::Environment> env, std::shared_ptr<ScheduleManager> schedule_manager, nlohmann::json& data);
 
     virtual void handleRequest(Poco::Net::HTTPServerRequest& req, Poco::Net::HTTPServerResponse& resp);
 
 
 private:
     std::shared_ptr<inja::Environment> env;
-    std::string template_path;
+    std::shared_ptr<ScheduleManager> schedule_manager;
     nlohmann::json data;
 };

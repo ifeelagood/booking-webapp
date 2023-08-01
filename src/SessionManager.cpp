@@ -6,7 +6,7 @@ SessionManager::SessionManager(const Poco::SharedPtr<Poco::Crypto::ECKey>& ec_ke
     signer.addAlgorithm(Poco::JWT::Signer::ALGO_ES256);
 }
 
-std::string SessionManager::createSessionToken(unsigned int user_id, int is_teacher)
+std::string SessionManager::createSessionToken(int64_t user_id, int is_teacher)
 {
     Poco::Timestamp time_issued, time_expire;
     time_expire += Poco::Timespan(6 * 60 * 60, 0);  //  TODO make expiration set by config.ini; currently 6 hours

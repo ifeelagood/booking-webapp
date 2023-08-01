@@ -18,9 +18,15 @@ void ServerApplication::initialize(Poco::Util::Application &app)
     // create db tables
     Poco::Data::SQLite::Connector::registerConnector();
     Poco::Data::Session session("SQLite", config().getString("database.path"));
+
     Poco::Data::Statement create_user_table(session);
     create_user_table << "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT, email TEXT, hash TEXT, is_teacher INTEGER);";
     create_user_table.execute();
+
+    Poco::Data::Statement create_schedule_table(session);
+    create_schedule_table << "CREATE TABLE IF NOT EXISTS schedule(id INTEGER PRIMARY KEY, teacher_name TEXT NOT NULL, subject_name TEXT, time_start INTEGER NOT NULL, time_end INTEGER NOT NULL, attendee_id INTEGER, FOREIGN KEY(attendee_id) REFERENCES users(id) );";
+    create_schedule_table.execute();
+
     session.close();
 
     Poco::Util::ServerApplication::initialize(app);

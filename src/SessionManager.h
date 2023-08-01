@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <set>
 #include <string>
 #include <iostream>
@@ -20,7 +21,7 @@ class SessionManager
 public:
     SessionManager(const Poco::SharedPtr<Poco::Crypto::ECKey>& ec_key);
 
-    std::string createSessionToken(unsigned int user_id, int is_teacher);
+    std::string createSessionToken(int64_t user_id, int is_teacher);
     bool hasValidSignature(const std::string& jwt, Poco::JWT::Token& token); // check authenticity of token
     static bool hasExpired(const Poco::JWT::Token& token); // check authenticity and expiration of token
 

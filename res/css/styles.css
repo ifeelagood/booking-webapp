@@ -35,7 +35,8 @@ a {
 }
 
 #main-content {
-    max-width: 600px;
+    display: flex;
+    max-width: 70%;
     margin: 2em auto;
     padding: 2em;
     background-color: var(--dark-secondary);
@@ -112,4 +113,47 @@ form input[type="submit"] {
 
 form input[type="submit"]:hover {
     background-color: lighten(var(--blue-accent), 10%);
+}
+
+/*
+Schedule styles
+*/
+
+.schedule {
+    width: 70%;
+    overflow-y: auto;
+    height: 100vh;
+}
+
+#schedule-table {
+    width: 100%;
+}
+#schedule-table tr {
+    background-color: var(--dark-primary);
+}
+
+#schedule-table tr:not(:first-child) {
+    cursor: pointer;
+}
+
+#schedule-table tr.selected {
+    background-color: var(--blue-accent);
+}
+
+.control-buttons {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 2em;
+}
+
+button {
+    display: inline-block;
+    font-family: 'Arial', sans-serif;
+    transition: background-color 0.3s ease;
+    background-color: var(--blue-accent);
+    color: var(--dark-primary);
+    border-radius: 15px;
+    padding: 10px;
 }

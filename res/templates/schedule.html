@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{ super() }}
+    <script>
+        window.onload = function() {
+            var table = document.getElementById("schedule-table");
+            for (var i = 1; i < table.rows.length; i++) {
+                table.rows[i].onclick = function() {
+                    // Remove the background from the previously selected row
+                    var selected = document.getElementsByClassName("selected");
+                    if (selected.length > 0) {
+                        selected[0].className = selected[0].className.replace("selected", "");
+                    }
+                    // Add the background to the newly selected row
+                    this.className += "selected";
+                };
+            }
+        }
+    </script>
+{% endblock %}
+
+{% block content %}
+<div class="schedule">
+    <table id="schedule-table">
+        <tr>
+            <th>Status</th>
+            <th>Name</th>
+            <th>Subject</th>
+            <th>Time</th>
+        </tr>
+        {% for event in events %}
+        <tr>
+            <td class="status">{{event.status}}</td>
+            <td class="name">{{event.name}}</td>
+            <td class="subject">{{event.subject}}</td>
+            <td class="time">{{event.time}}</td>
+        </tr>
+        {% endfor %}
+        <!-- Add more rows as necessary -->
+    </table>
+</div>
+<div class="control-buttons">
+    <button id="book">Book</button>
+    <button id="free">Free</button>
+    {% if is_teacher %}
+    <button id="create">Create</button>
+    <button id="delete">Delete</button>
+    <button id="modify">Modify</button>
+    {% endif %}
+</div>
+{% endblock %}}

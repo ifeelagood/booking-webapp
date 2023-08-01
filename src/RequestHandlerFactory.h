@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include <memory>
 
@@ -25,6 +26,7 @@
 #include "handlers/RegistrationHandler.h"
 #include "handlers/LoginHandler.h"
 #include "handlers/RedirectHandler.h"
+#include "handlers/ScheduleHandler.h"
 
 class RequestHandlerFactory : public Poco::Net::HTTPRequestHandlerFactory
 {
@@ -34,6 +36,7 @@ public:
     virtual Poco::Net::HTTPRequestHandler* createRequestHandler(const Poco::Net::HTTPServerRequest &req);
 
 private:
+    void querySession(const Poco::Net::HTTPServerRequest& req, bool& is_authorised, bool& is_teacher, int64_t& user_id);
 
     inja::Environment env;
     Poco::Crypto::ECKey ec_key;

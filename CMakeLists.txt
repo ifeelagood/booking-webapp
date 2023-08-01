@@ -8,25 +8,31 @@ set(SRC
         src/RequestHandlerFactory.cpp
         src/ServerApplication.cpp
         src/PasswordHasher.cpp
+        src/SessionManager.cpp
+        src/ScheduleManager.cpp
         src/handlers/DynamicTemplateHandler.cpp
         src/handlers/NotFoundHandler.cpp
         src/handlers/StaticResourceHandler.cpp
         src/handlers/RegistrationHandler.cpp
         src/handlers/LoginHandler.cpp
-        src/SessionManager.cpp src/handlers/RedirectHandler.cpp src/handlers/RedirectHandler.h)
+        src/handlers/RedirectHandler.cpp
+
+        src/handlers/ScheduleHandler.cpp)
 
 set(INC
         src/RequestHandlerFactory.h
         src/ServerApplication.h
         src/PasswordHasher.h
+        src/SessionManager.h
+        src/ScheduleManager.h
         src/handlers/DynamicTemplateHandler.h
         src/handlers/NotFoundHandler.h
         src/handlers/StaticResourceHandler.h
         src/handlers/DynamicTemplateHandler.h
         src/handlers/RegistrationHandler.h
         src/handlers/LoginHandler.h
-        src/SessionManager.h
-)
+        src/handlers/RedirectHandler.h
+        src/ScheduleManager.h)
 
 
 
