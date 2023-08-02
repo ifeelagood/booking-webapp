@@ -1,7 +1,7 @@
 #include "ScheduleHandler.h"
 
-ScheduleHandler::ScheduleHandler(std::shared_ptr<inja::Environment> env, std::shared_ptr<ScheduleManager> schedule_manager, nlohmann::json &data)
-        : env(std::move(env)), data(data), schedule_manager(schedule_manager)
+ScheduleHandler::ScheduleHandler(std::shared_ptr<inja::Environment> env, std::shared_ptr<ScheduleManager> schedule_manager, int64_t user_id, nlohmann::json &data)
+        : env(std::move(env)), data(data), schedule_manager(schedule_manager), user_id(user_id)
 {
 }
 
@@ -12,12 +12,18 @@ void ScheduleHandler::handleRequest(Poco::Net::HTTPServerRequest &req, Poco::Net
 
     for (const auto& event : events)
     {
-        std::cout << "attendee id: " << event.attendee_id << std::endl;
+
         nlohmann::json event_json;
-        event_json["status"] = "NOT IMPLEMENTED";
+
+        if (user_id == event.attendee_id) event_json["status"] = "ATTENDING";
+        else if (event.attendee_id == 0) event_json["status"] = "AVAILABLE";
+        else event_json["status"] = "UNAVAILABLE";
+
+        event_json["event_id"] = event.event_id;
         event_json["name"] = event.teacher_name;
         event_json["subject"] = event.subject_name;
-        event_json["time"] = std::to_string(event.time_start) + ' ' + std::to_string(event.time_end);
+        event_json["time_start"] = std::to_string(event.time_start);
+        event_json["time_end"] = std::to_string(event.time_end);
 
         data["events"].push_back(event_json);
     }

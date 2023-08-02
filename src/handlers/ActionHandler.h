@@ -7,22 +7,23 @@
 #include <Poco/Net/HTTPServerRequest.h>
 #include <Poco/Net/HTTPServerResponse.h>
 
-#include <inja/inja.hpp>
-#include <nlohmann/json.hpp>
+#include <Poco/Net/HTMLForm.h>
+
+#include <Poco/JSON/JSON.h>
 
 #include "../ScheduleManager.h"
 
-class ScheduleHandler : public Poco::Net::HTTPRequestHandler
+class ActionHandler : public Poco::Net::HTTPRequestHandler
 {
 public:
-    ScheduleHandler(std::shared_ptr<inja::Environment> env, std::shared_ptr<ScheduleManager> schedule_manager, int64_t user_id, nlohmann::json& data);
+    ActionHandler(std::shared_ptr<ScheduleManager> schedule_manager, int64_t user_id, bool is_authorised, bool is_teacher);
 
     virtual void handleRequest(Poco::Net::HTTPServerRequest& req, Poco::Net::HTTPServerResponse& resp);
 
 
 private:
-    std::shared_ptr<inja::Environment> env;
     std::shared_ptr<ScheduleManager> schedule_manager;
-    nlohmann::json data;
     int64_t user_id;
+    bool is_teacher;
+    bool is_authorised;
 };

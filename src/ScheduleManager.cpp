@@ -6,7 +6,8 @@ ScheduleManager::ScheduleManager(std::unique_ptr<Poco::Data::Session> session)
 
 bool ScheduleManager::createEvent(uint64_t time_start, uint64_t time_end, std::string &teacher_name, std::string &subject_name)
 {
-    try {
+    try
+    {
         *session << "INSERT INTO schedule (time_start, time_end, teacher_name, subject_name) VALUES(?, ?, ?, ?)",
                 Poco::Data::Keywords::use(time_start),
                 Poco::Data::Keywords::use(time_end),
@@ -14,8 +15,10 @@ bool ScheduleManager::createEvent(uint64_t time_start, uint64_t time_end, std::s
                 Poco::Data::Keywords::use(subject_name),
                 Poco::Data::Keywords::now;
         return true;
-    } catch (Poco::Exception& ex) {
-        // Log error or handle it
+    }
+    catch (const Poco::Exception& e)
+    {
+        std::cerr << "Creation of event failed. Reason: " << e.what() << std::endl;
         return false;
     }
 }
@@ -33,13 +36,15 @@ bool ScheduleManager::modifyEvent(int64_t event_id, uint64_t time_start, uint64_
                 Poco::Data::Keywords::now;
         return true;
     }
-    catch (Poco::Exception& ex) {
-        // Log error or handle it
+    catch (const Poco::Exception& e)
+    {
+        std::cerr << "Modifying of event failed. Reason: " << e.what() << std::endl;
         return false;
     }
 }
 
-bool ScheduleManager::removeEvent(int64_t event_id) {
+bool ScheduleManager::removeEvent(int64_t event_id)
+{
     try
     {
         *session << "DELETE FROM schedule WHERE id = ?",
@@ -47,9 +52,9 @@ bool ScheduleManager::removeEvent(int64_t event_id) {
                 Poco::Data::Keywords::now;
         return true;
     }
-    catch (Poco::Exception& ex)
+    catch (const Poco::Exception& e)
     {
-        // Log error or handle it
+        std::cerr << "Removal of event failed. Reason: " << e.what() << std::endl;
         return false;
     }
 }
@@ -77,9 +82,9 @@ bool ScheduleManager::placeBooking(int64_t event_id, int64_t attendee_id)
             return false;
         }
     }
-    catch (Poco::Exception& ex)
+    catch (const Poco::Exception& e)
     {
-        // Log error or handle it
+        std::cerr << "Booking of event failed. Reason: " << e.what() << std::endl;
         return false;
     }
 }
@@ -108,9 +113,9 @@ bool ScheduleManager::freeBooking(int64_t event_id, int64_t attendee_id)
             return false;
         }
     }
-    catch (Poco::Exception& ex)
+    catch (const Poco::Exception& e)
     {
-        // Log error or handle it
+        std::cerr << "Freeing of event failed. Reason: " << e.what() << std::endl;
         return false;
     }
 }

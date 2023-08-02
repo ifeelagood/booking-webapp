@@ -17,7 +17,7 @@ set(SRC
         src/handlers/LoginHandler.cpp
         src/handlers/RedirectHandler.cpp
 
-        src/handlers/ScheduleHandler.cpp)
+        src/handlers/ScheduleHandler.cpp src/handlers/ActionHandler.cpp)
 
 set(INC
         src/RequestHandlerFactory.h

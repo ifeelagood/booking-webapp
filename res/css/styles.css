@@ -78,12 +78,13 @@ form {
 form input[type="text"],
 form input[type="email"],
 form input[type="password"],
-form input[type="checkbox"] {
+form input[type="checkbox"],
+form input[type="datetime-local"] {
     margin-bottom: 1em;
     width: 100%;
     padding: 0.5em;
     border: none;
-    background-color: lighten(var(--dark-secondary), 10%);
+    background-color: var(--dark-primary);
     color: var(--light-accent);
     border-radius: 15px;
 }
@@ -157,3 +158,4 @@ button {
     border-radius: 15px;
     padding: 10px;
 }
+

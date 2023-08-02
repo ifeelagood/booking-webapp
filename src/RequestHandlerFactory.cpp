@@ -79,9 +79,21 @@ Poco::Net::HTTPRequestHandler* RequestHandlerFactory::createRequestHandler(const
 
     if (uri == "/book" && method == "GET")
     {
-        data["title"] = "Schedule";
-        return new ScheduleHandler(std::make_shared<inja::Environment>(env), std::make_shared<ScheduleManager>(std::make_unique<Poco::Data::Session>("SQLite", db_path)), data);
+        if (is_authorised)
+        {
+            return new ScheduleHandler(std::make_shared<inja::Environment>(env), std::make_shared<ScheduleManager>(std::make_unique<Poco::Data::Session>("SQLite", db_path)), user_id, data);
+        }
+        else
+        {
+            return new RedirectHandler("/");
+        }
     }
+
+    if (uri == "/action" && method == "POST")
+    {
+        return new ActionHandler(std::make_shared<ScheduleManager>(std::make_unique<Poco::Data::Session>("SQLite", db_path)), user_id, is_authorised, is_teacher);
+    }
+
 
     return new NotFoundHandler(std::make_shared<inja::Environment>(env), data);
 }

@@ -27,6 +27,7 @@
 #include "handlers/LoginHandler.h"
 #include "handlers/RedirectHandler.h"
 #include "handlers/ScheduleHandler.h"
+#include "handlers/ActionHandler.h"
 
 class RequestHandlerFactory : public Poco::Net::HTTPRequestHandlerFactory
 {
