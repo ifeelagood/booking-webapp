@@ -4,287 +4,187 @@
     {{ super() }}
     <script>
         window.onload = function() {
-            // selected JS
+            // Initialize table row selection
+            initializeRowSelection();
+
+            // Fix timestamps
+            convertTimestamps();
+
+            // Event handling for buttons
+            setupEventHandlers();
+        };
+
+        // Functions related to table row selection
+        function initializeRowSelection() {
             var table = document.getElementById("schedule-table");
             for (var i = 1; i < table.rows.length; i++) {
                 table.rows[i].onclick = function() {
                     // Remove the background from the previously selected row
-                    var selected = document.getElementsByClassName("selected");
-                    if (selected.length > 0) {
-                        selected[0].className = selected[0].className.replace("selected", "");
-                    }
+                    clearSelection();
                     // Add the background to the newly selected row
                     this.className += "selected";
                 };
             }
+        }
 
-            function convertToUnixTimestamp(inputValue) {
-                // Parse the input value as a date object
-                const date = new Date(inputValue);
-
-                // Get the Unix timestamp in milliseconds and convert to seconds
-                const unixTimestamp = Math.floor(date.getTime() / 1000);
-
-                return unixTimestamp;
+        function clearSelection() {
+            var selected = document.getElementsByClassName("selected");
+            if (selected.length > 0) {
+                selected[0].className = selected[0].className.replace("selected", "");
             }
-
-            function convertUnixToLocaleString(unixTimestamp) {
-                // Convert the Unix timestamp from seconds to milliseconds
-                const date = new Date(unixTimestamp * 1000);
-
-                // Convert to a string using the "en-AU" locale
-                const dateString = date.toLocaleString('en-AU');
-
-                return dateString;
-            }
-
-            // fix timestamps
-
-            // Select all the td elements with class "time_start" and "time_end"
-            const timeStartElements = document.querySelectorAll('td.time_start');
-            const timeEndElements = document.querySelectorAll('td.time_end');
-
-            // Convert the Unix timestamp to a date string and update the content for "time_start" elements
-            timeStartElements.forEach(element => {
-                const unixTimestamp = parseInt(element.textContent, 10);
-                element.textContent = convertUnixToLocaleString(unixTimestamp);
-            });
-
-            // Convert the Unix timestamp to a date string and update the content for "time_end" elements
-            timeEndElements.forEach(element => {
-                const unixTimestamp = parseInt(element.textContent, 10);
-                element.textContent = convertUnixToLocaleString(unixTimestamp);
-            });
-
-
-
-
-            // Book button
-            document.getElementById('book').addEventListener('click', function() {
-                // Find the table row with the class 'selected'
-                var selectedRow = document.querySelector('tr.selected');
-
-                // If no row is selected, alert the user and return
-                if (!selectedRow) {
-                    alert('No event is selected!');
-                    return;
-                }
-                var data = "action=book_event&event_id=" + encodeURIComponent(selectedRow.id);
-
-                // Create a new request
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', '/action', true);
-                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;charset=UTF-8');
-
-                // Define what happens on successful data submission
-                xhr.onload = function() {
-                    if (xhr.status >= 200 && xhr.status < 400) {
-                        var response = xhr.responseText;
-                        if (response === 'success') { alert('Success!'); } else if (response === 'failure') { alert('Failure!'); } else { alert('Unexpected response!'); }
-                    } else {
-                        alert('Request failed! Please try again.');
-                    }
-
-                    location.reload(); // reload page
-                };
-
-                // Send the request
-                xhr.send(data);
-            });
-
-            // Free button
-            document.getElementById('free').addEventListener('click', function() {
-                // Find the table row with the class 'selected'
-                var selectedRow = document.querySelector('tr.selected');
-
-                // If no row is selected, alert the user and return
-                if (!selectedRow) {
-                    alert('No event is selected!');
-                    return;
-                }
-                var data = "action=free_event&event_id=" + encodeURIComponent(selectedRow.id);
-
-                // Create a new request
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', '/action', true);
-                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;charset=UTF-8');
-
-                // Define what happens on successful data submission
-                xhr.onload = function() {
-                    if (xhr.status >= 200 && xhr.status < 400) {
-                        var response = xhr.responseText;
-                        if (response === 'success') { alert('Success!'); } else if (response === 'failure') { alert('Failure!'); } else { alert('Unexpected response!'); }
-                    } else {
-                        alert('Request failed! Please try again.');
-                    }
-
-                    location.reload(); // reload page
-                };
-
-                // Send the request
-                xhr.send(data);
-            });
-
-            // Delete button
-            document.getElementById('delete').addEventListener('click', function() {
-                // Find the table row with the class 'selected'
-                var selectedRow = document.querySelector('tr.selected');
-
-                // If no row is selected, alert the user and return
-                if (!selectedRow) {
-                    alert('No event is selected!');
-                    return;
-                }
-                var data = "action=remove_event&event_id=" + encodeURIComponent(selectedRow.id);
-
-                // Create a new request
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', '/action', true);
-                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;charset=UTF-8');
-
-                // Define what happens on successful data submission
-                xhr.onload = function() {
-                    if (xhr.status >= 200 && xhr.status < 400) {
-                        var response = xhr.responseText;
-                        if (response === 'success') { alert('Success!'); } else if (response === 'failure') { alert('Failure!'); } else { alert('Unexpected response!'); }
-                    } else {
-                        alert('Request failed! Please try again.');
-                    }
-
-                    location.reload(); // reload page
-                };
-
-                // Send the request
-                xhr.send(data);
-            });
-
-            // Create Button
-            document.getElementById('create').addEventListener('click', function() {
-                // Show the form when the button is pressed
-                document.getElementById('createForm').style.display = 'block';
-            });
-
-            document.getElementById('eventForm').addEventListener('submit', function(event) {
-                // Prevent the form from submitting in the usual way
-                event.preventDefault();
-
-                // Get the values from the form
-                var teacherName = document.getElementById('teacher_name').value;
-                var subjectName = document.getElementById('subject_name').value;
-
-                // Create Date objects
-                var timeStart = convertToUnixTimestamp(document.getElementById('time_start').value);
-                var timeEnd = convertToUnixTimestamp(document.getElementById('time_end').value);
-
-
-                // Create the data to send in the form "teacher_name=value&subject_name=value&time_start=value&time_end=value"
-                var data = 'action=create_event' +
-                    '&teacher_name=' + encodeURIComponent(teacherName) +
-                    '&subject_name=' + encodeURIComponent(subjectName) +
-                    '&time_start=' + encodeURIComponent(timeStart) +
-                    '&time_end=' + encodeURIComponent(timeEnd);
-
-                // Create a new request
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', '/action', true);
-                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;charset=UTF-8');
-
-                // Define what happens on successful data submission
-                xhr.onload = function() {
-                    if (xhr.status >= 200 && xhr.status < 400) {
-                        var response = xhr.responseText;
-
-                        // Check if the response was "success" or "failure" and alert the user
-                        if (response === 'success') { alert('Success!'); } else if (response === 'failure') { alert('Failure!'); } else { alert('Unexpected response!'); }
-
-                        location.reload();
-                    } else {
-                        alert('Request failed! Please try again.');
-                    }
-                };
-
-                // Send the request
-                xhr.send(data);
-            });
-
-            // Modify Button
-            document.getElementById('modify').addEventListener('click', function() {
-                // Fill values from selected row
-                var selectedRow = document.querySelector('tr.selected');
-                if (!selectedRow) {
-                    alert('No event is selected!');
-                    return;
-                }
-
-                var eventForm = document.getElementById("eventForm");
-                eventForm.querySelector("#subject_name").value = selectedRow.querySelector('.name').textContent;
-                eventForm.querySelector("#teacher_name").value = selectedRow.querySelector('.subject').textContent;
-                // eventForm.querySelector("#time_start").value = localeStringToDatetimeLocal(selectedRow.querySelector('.time_start').textContent);
-                // eventForm.querySelector("#time_end").value = localeStringToDatetimeLocal(selectedRow.querySelector('.time_end').textContent);
-
-                // Show the form when the button is pressed
-                document.getElementById('createForm').style.display = 'block';
-            });
-
-            document.getElementById('eventForm').addEventListener('submit', function(event) {
-                // Prevent the form from submitting in the usual way
-                event.preventDefault();
-
-                // Find the table row with the class 'selected'
-                var selectedRow = document.querySelector('tr.selected');
-
-                // If no row is selected, alert the user and return
-                if (!selectedRow) {
-                    alert('No event is selected!');
-                    return;
-                }
-                var eventID = selectedRow.id;
-
-                // Get the values from the form
-                var teacherName = document.getElementById('teacher_name').value;
-                var subjectName = document.getElementById('subject_name').value;
-
-                // Create Date objects
-                var timeStart = convertToUnixTimestamp(document.getElementById('time_start').value);
-                var timeEnd = convertToUnixTimestamp(document.getElementById('time_end').value);
-
-
-                // Create the data to send in the form "teacher_name=value&subject_name=value&time_start=value&time_end=value"
-                var data = 'action=modify_event' +
-                    '&event_id=' + encodeURIComponent(eventID) +
-                    '&teacher_name=' + encodeURIComponent(teacherName) +
-                    '&subject_name=' + encodeURIComponent(subjectName) +
-                    '&time_start=' + encodeURIComponent(timeStart) +
-                    '&time_end=' + encodeURIComponent(timeEnd);
-
-                // Create a new request
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', '/action', true);
-                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;charset=UTF-8');
-
-                // Define what happens on successful data submission
-                xhr.onload = function() {
-                    if (xhr.status >= 200 && xhr.status < 400) {
-                        var response = xhr.responseText;
-
-                        // Check if the response was "success" or "failure" and alert the user
-                        if (response === 'success') { alert('Success!'); } else if (response === 'failure') { alert('Failure!'); } else { alert('Unexpected response!'); }
-
-                        location.reload();
-                    } else {
-                        alert('Request failed! Please try again.');
-                    }
-                };
-
-                // Send the request
-                xhr.send(data);
-            });
-
         }
 
 
+        // Conversion utilities
+        function convertToUnixTimestamp(inputValue) {
+            const date = new Date(inputValue);
+            const unixTimestamp = Math.floor(date.getTime() / 1000);
+            return unixTimestamp;
+        }
+
+        // Function to convert a Unix timestamp to a locale date string (en-AU)
+        const toLocaleDateString = (timestamp) => new Date(timestamp * 1000).toLocaleString('en-AU');
+
+        // Function to add a new column with a specific value
+        const addColumn = (row, value) => {
+            const cell = row.insertCell();
+            cell.textContent = value;
+        };
+
+        // Function to hide columns with a given class name
+        const hideColumn = (className) => {
+            const elements = document.getElementsByClassName(className);
+            for (let element of elements) {
+                element.style.display = 'none';
+            }
+        };
+
+        // Main function to convert the Unix timestamps and modify the table
+        const convertTimestamps = () => {
+            const table = document.getElementById('schedule-table');
+            for (let row of table.rows) {
+                const startTimeCell = row.getElementsByClassName('time_start')[0];
+                const endTimeCell = row.getElementsByClassName('time_end')[0];
+
+                if (startTimeCell && endTimeCell) {
+                    const startTime = toLocaleDateString(startTimeCell.textContent);
+                    const endTime = toLocaleDateString(endTimeCell.textContent);
+
+                    addColumn(row, startTime);
+                    addColumn(row, endTime);
+                }
+            }
+
+            hideColumn('time_start');
+            hideColumn('time_end');
+        };
 
 
+        // Event handling setup for buttons
+        function setupEventHandlers() {
+            document.getElementById('book').addEventListener('click', function() {
+                handleEventAction("book_event", 'Success!', 'Failure!', 'Unexpected response!');
+            });
+
+            document.getElementById('free').addEventListener('click', function() {
+                handleEventAction("free_event", 'Success!', 'Failure!', 'Unexpected response!');
+            });
+
+            document.getElementById('delete').addEventListener('click', function() {
+                handleEventAction("remove_event", 'Success!', 'Failure!', 'Unexpected response!');
+            });
+
+            document.getElementById('create').addEventListener('click', function() {
+                document.getElementById('createForm').style.display = 'block';
+            });
+
+            document.getElementById('modify').addEventListener('click', modifyEvent);
+
+            // Form submission handling
+            document.getElementById('eventForm').addEventListener('submit', handleFormSubmit);
+        }
+
+        // AJAX request handler for actions
+        function handleEventAction(actionType, successMessage, failureMessage, unexpectedMessage) {
+            var selectedRow = getSelectedRow();
+            if (!selectedRow) return;
+
+            var data = `action=${actionType}&event_id=${encodeURIComponent(selectedRow.id)}`;
+            sendRequest(data, successMessage, failureMessage, unexpectedMessage);
+        }
+
+        function getSelectedRow() {
+            var selectedRow = document.querySelector('tr.selected');
+            if (!selectedRow) {
+                alert('No event is selected!');
+                return null;
+            }
+            return selectedRow;
+        }
+
+        // AJAX request for sending data
+        function sendRequest(data, successMessage, failureMessage, unexpectedMessage) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/action', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;charset=UTF-8');
+            xhr.onload = function() {
+                if (xhr.status >= 200 && xhr.status < 400) {
+                    var response = xhr.responseText;
+                    if (response === 'success') { alert(successMessage); } else if (response === 'failure') { alert(failureMessage); } else { alert(unexpectedMessage); }
+                } else {
+                    alert('Request failed! Please try again.');
+                }
+
+                location.reload(); // reload page
+            };
+            xhr.send(data);
+        }
+
+        function unixToISOString(timestamp) {
+            return new Date(timestamp * 1000).toISOString().slice(0, -1);;
+        }
+
+        // Modify event functionality
+        function modifyEvent() {
+            var selectedRow = getSelectedRow();
+            if (!selectedRow) return;
+
+            var eventForm = document.getElementById("eventForm");
+            eventForm.querySelector("#subject_name").value = selectedRow.querySelector('.name').textContent;
+            eventForm.querySelector("#teacher_name").value = selectedRow.querySelector('.subject').textContent;
+
+            eventForm.querySelector("#time_start").value = unixToISOString(selectedRow.querySelector(".time_start").textContent);
+            eventForm.querySelector("#time_end").value = unixToISOString(selectedRow.querySelector(".time_end").textContent);
+
+
+            console.log(unixToISOString(selectedRow.querySelector(".time_end").textContent));
+
+            // Show the form
+            document.getElementById('createForm').style.display = 'block';
+        }
+
+        // Handle form submission
+        function handleFormSubmit(event) {
+            // Prevent the form from submitting in the usual way
+            event.preventDefault();
+
+            // Gather form data
+            var teacherName = document.getElementById('teacher_name').value;
+            var subjectName = document.getElementById('subject_name').value;
+            var timeStart = convertToUnixTimestamp(document.getElementById('time_start').value);
+            var timeEnd = convertToUnixTimestamp(document.getElementById('time_end').value);
+
+            // Additional actions for modifying an event
+            var selectedRow = document.querySelector('tr.selected');
+            var actionType = selectedRow ? 'modify_event' : 'create_event';
+            var eventID = selectedRow ? `&event_id=${encodeURIComponent(selectedRow.id)}` : '';
+
+            // Create data string
+            var data = `action=${actionType}${eventID}&teacher_name=${encodeURIComponent(teacherName)}&subject_name=${encodeURIComponent(subjectName)}&time_start=${encodeURIComponent(timeStart)}&time_end=${encodeURIComponent(timeEnd)}`;
+
+            // Send request
+            sendRequest(data, 'Success!', 'Failure!', 'Unexpected response!');
+        }
     </script>
 {% endblock %}
 
