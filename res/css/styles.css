@@ -159,3 +159,6 @@ button {
     padding: 10px;
 }
 
+#main-content {
+    justify-content: space-around;
+}
