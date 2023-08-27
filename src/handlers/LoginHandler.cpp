@@ -61,7 +61,7 @@ void LoginHandler::handleRequest(Poco::Net::HTTPServerRequest &request, Poco::Ne
         std::string jwt = session_manager->createSessionToken(user_id, is_teacher);
 
         response.set("Set-Cookie", std::format("session={}", jwt));
-        response.send() << "<html><body>Login Successful!!11!!</body></html>";
+        response.redirect("/book");
     }
     else
     {

@@ -5,6 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/styles.css">
+    <script>
+    function logout() {
+        // Delete the "session" cookie
+        document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+        // Redirect to root directory
+        window.location.href = '/';
+    }
+    </script>
     <title>{% block title %}{% endblock%} - binja</title>
     {% endblock %}
 </head>
@@ -15,6 +24,7 @@
 
             {% if is_authorised %}
             <a href="/book">Book</a>
+            <a href="javascript:void(0);" onclick="logout();">Logout</a>
             {% endif %}
 
         </div>
