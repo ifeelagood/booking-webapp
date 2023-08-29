@@ -4,7 +4,9 @@
 #include <Poco/Data/Session.h>
 #include <Poco/Data/SQLite/Connector.h>
 #include <Poco/Crypto/OpenSSLInitializer.h>
+#ifdef WIN32
 #include <openssl/applink.c> // <--- THIS FUCKER. RIGHT HERE. NEEDED TO STOP "OPENSSL_Uplink(00007FFF6DF94068,08): no OPENSSL_Applink"
+#endif
 
 void ServerApplication::initialize(Poco::Util::Application &app)
 {

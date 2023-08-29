@@ -11,7 +11,12 @@
 #include <Poco/Net/HTTPRequestHandler.h>
 #include <Poco/Net/HTTPRequestHandlerFactory.h>
 #include <Poco/Net/NameValueCollection.h>
+
+#ifdef WIN32
 #include <Poco/Crypto/ECkey.h>
+#else
+#include <Poco/Crypto/ECKey.h>
+#endif
 
 #include <Poco/JSON/Object.h>
 
