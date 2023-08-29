@@ -1,7 +1,7 @@
 #!/bin/bash
 
-PRIVATE_KEY="binja_ecsda.pem"
-PUBLIC_KEY="binja_ecsda.pub"
+PRIVATE_KEY="binja_ecdsa.pem"
+PUBLIC_KEY="binja_ecdsa.pub"
 
 # check existence of openssl
 if ! command -v openssl &> /dev/null
